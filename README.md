@@ -81,10 +81,6 @@ To send the text to a backend, take the value of `recognizedText` when listening
 | How curvy the S shape is | `0.30` in `lib/flowing_background.dart` |
 | Circle size and ring transparency | `core` and `ringAlpha` in `lib/home_screen.dart` |
 
-## Known limitations
-
-- Microphone input often does not work on emulators. Test speech on a real phone.
-- Speech recognition on Android usually needs an internet connection and Google's speech services on the device.
 
 ## Status
 
