@@ -16,7 +16,7 @@ This is the first part of the graduation project. It is a self-contained screen,
 ## Screenshots
 
 | Greeting | Home (light) | Home (dark) | Listening | Speech-to-Text
-| --- | --- | --- | --- |
+| --- | --- | --- | --- | --- |
 | <img src="screenshots/splash.png" width="180"> | <img src="screenshots/home-light.png" width="180"> | <img src="screenshots/home-dark.png" width="180"> | <img src="screenshots/listening.png" width="180"> | <img src="screenshots/speech-to-text.png" width="180"> |
 
 ## Built with
