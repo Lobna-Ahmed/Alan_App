@@ -89,3 +89,4 @@ To send the text to a backend, take the value of `recognizedText` when listening
 - [x] Light and dark mode
 - [ ] Connect to the backend
 - [ ] Other screens of the app
+
