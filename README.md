@@ -15,9 +15,9 @@ This is the first part of the graduation project. It is a self-contained screen,
 
 ## Screenshots
 
-| Greeting | Home (light) | Listening | Home (dark) | Text to speech |
+| Greeting | Home (light) | Home (dark) | Listening | Text to speech |
 | --- | --- | --- | --- | --- |
-| <img src="screenshots/splash.png" width="160"> | <img src="screenshots/home-light.png" width="160"> | <img src="screenshots/listening.png" width="160"> | <img src="screenshots/home-dark.png" width="160"> | <img src="screenshots/text-to-speech.png" width="160"> |
+| <img src="screenshots/splash.png" width="160"> | <img src="screenshots/home-light.png" width="160"> | <img src="screenshots/home-dark.png" width="160"> | <img src="screenshots/listening.png" width="160"> | <img src="screenshots/text-to-speech.png" width="160"> |
 
 ## Built with
 
@@ -102,4 +102,3 @@ To send the text to a backend, take the value of `recognizedText` when listening
 - [x] Light and dark mode
 - [ ] Connect to the backend
 - [ ] Other screens of the app
-
