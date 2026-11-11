@@ -90,6 +90,3 @@ To send the text to a backend, take the value of `recognizedText` when listening
 - [ ] Connect to the backend
 - [ ] Other screens of the app
 
-## Author
-
-Home screen by Lobna, as part of the graduation project.
