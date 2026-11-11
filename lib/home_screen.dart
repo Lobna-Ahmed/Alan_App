@@ -21,6 +21,11 @@ class _HomeScreenState extends State<HomeScreen> {
   // Whoever connects the backend only needs this variable.
   String recognizedText = '';
 
+  // Language: English by default, Arabic when switched with the EN/AR button.
+  bool _arabic = false;
+  String? _enLocale; // null = use the phone's default
+  String? _arLocale; // null = Arabic voice input is not installed on this phone
+
   @override
   void initState() {
     super.initState();
@@ -38,7 +43,50 @@ class _HomeScreenState extends State<HomeScreen> {
         if (mounted) setState(() => _stopState());
       },
     );
+    if (ok) await _loadLocales();
     if (mounted) setState(() => _available = ok);
+  }
+
+  // Ask the phone which languages it can listen to, and pick English and
+  // Arabic (Egyptian Arabic first if the phone has it).
+  Future<void> _loadLocales() async {
+    final locales = await _speech.locales();
+    final ids = locales.map((l) => l.localeId).toList();
+
+    String? find(String language, String preferredCountry) {
+      final matches =
+          ids.where((id) => id.toLowerCase().startsWith(language)).toList();
+      if (matches.isEmpty) return null;
+      return matches.firstWhere(
+        (id) => id.toUpperCase().contains(preferredCountry),
+        orElse: () => matches.first,
+      );
+    }
+
+    _arLocale = find('ar', 'EG');
+    _enLocale = find('en', 'US');
+  }
+
+  // The EN/AR button
+  Future<void> _switchLanguage() async {
+    if (!_arabic && _arLocale == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Arabic voice input is not installed on this phone. '
+            'Add Arabic in the phone language settings.',
+          ),
+        ),
+      );
+      return;
+    }
+    if (_listening) await _speech.stop();
+    if (!mounted) return;
+    setState(() {
+      _arabic = !_arabic;
+      _stopState();
+      recognizedText = '';
+    });
   }
 
   void _stopState() {
@@ -61,6 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     await _speech.listen(
+      localeId: _arabic ? _arLocale : _enLocale,
       onResult: (result) {
         setState(() => recognizedText = result.recognizedWords);
       },
@@ -159,31 +208,52 @@ class _HomeScreenState extends State<HomeScreen> {
         child: SafeArea(
           child: Column(
             children: [
-              // Dark mode toggle: moon in light mode, sun in dark mode
-              Align(
-                alignment: Alignment.topRight,
-                child: ValueListenableBuilder<ThemeMode>(
-                  valueListenable: themeMode,
-                  builder: (context, mode, _) {
-                    final dark = isDarkNow(context);
-                    return IconButton(
-                      onPressed: () {
-                        themeMode.value =
-                            dark ? ThemeMode.light : ThemeMode.dark;
-                      },
-                      icon: Icon(
-                        dark
-                            ? Icons.light_mode_rounded
-                            : Icons.dark_mode_rounded,
-                        color: c.textSecondary,
-                        size: 26,
+              // Top bar: language switch (EN/AR) and dark mode toggle
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton.icon(
+                    onPressed: _switchLanguage,
+                    style: TextButton.styleFrom(
+                      foregroundColor: c.textSecondary,
+                    ),
+                    icon: const Icon(Icons.translate_rounded, size: 20),
+                    label: Text(
+                      _arabic ? 'AR' : 'EN',
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                  // Dark mode toggle: moon in light mode, sun in dark mode
+                  ValueListenableBuilder<ThemeMode>(
+                    valueListenable: themeMode,
+                    builder: (context, mode, _) {
+                      final dark = isDarkNow(context);
+                      return IconButton(
+                        onPressed: () {
+                          themeMode.value =
+                              dark ? ThemeMode.light : ThemeMode.dark;
+                        },
+                        icon: Icon(
+                          dark
+                              ? Icons.light_mode_rounded
+                              : Icons.dark_mode_rounded,
+                          color: c.textSecondary,
+                          size: 26,
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
               Text(
-                _listening ? 'Listening...' : 'Tap the circle to talk',
+                _listening
+                    ? (_arabic ? 'جارٍ الاستماع...' : 'Listening...')
+                    : (_arabic
+                        ? 'اضغط على الدائرة للتحدث'
+                        : 'Tap the circle to talk'),
                 style: TextStyle(
                   color: c.textSecondary,
                   fontSize: 16,
@@ -204,8 +274,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text(
                   _available
                       ? recognizedText
-                      : 'Microphone not available. Check permissions.',
+                      : (_arabic
+                          ? 'الميكروفون غير متاح. تحقق من الأذونات.'
+                          : 'Microphone not available. Check permissions.'),
                   textAlign: TextAlign.center,
+                  textDirection:
+                      _arabic ? TextDirection.rtl : TextDirection.ltr,
                   style: TextStyle(
                     color: c.textPrimary,
                     fontSize: 18,
