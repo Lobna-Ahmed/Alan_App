@@ -1,17 +1,91 @@
-# alan
+# Alan - AI Assistant Home Screen
 
-A new Flutter project.
+The home screen of the Alan AI assistant app, built with Flutter. It greets the user, then shows a voice-reactive circle: tap it, speak, and the circle responds to your voice while your words appear as text.
 
-## Getting Started
+This is the first part of the graduation project. It is a self-contained screen, ready to be connected to the backend.
 
-This project is a starting point for a Flutter application.
+## Features
 
-A few resources to get you started if this is your first Flutter project:
+- **Greeting screen:** a soft "Hello!" fades in while the app gets ready, then moves to the home screen.
+- **Flowing background:** slow, S-shaped bands of blue that curve and drift across the screen.
+- **Voice-reactive circle:** a white circle with soft rings. It stays still until you tap it. While listening, the rings fade in and spread outward with the volume of your voice.
+- **Speech to text:** what you say is shown live at the bottom of the screen.
+- **Light and dark mode:** a moon/sun button in the top corner switches modes. It starts from the phone's own setting.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## Built with
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [Flutter](https://flutter.dev) and Dart
+- [`speech_to_text`](https://pub.dev/packages/speech_to_text) for speech recognition
+
+## Project structure
+
+```
+lib/
+  main.dart                 App entry point and light/dark theme switching
+  app_colors.dart           Color palettes for light and dark mode
+  flowing_background.dart   The animated S-shaped gradient background
+  splash_screen.dart        The "Hello!" greeting screen
+  home_screen.dart          The circle, rings and speech input
+```
+
+## Getting started
+
+### Requirements
+
+- Flutter SDK installed (check with `flutter doctor`)
+- An Android phone with USB debugging on, or an Android emulator
+- Windows only: Developer Mode turned on in Windows settings (Flutter needs it for plugins)
+
+### Run the app
+
+```bash
+git clone <repository-link>
+cd <project-folder>
+flutter pub get
+flutter run
+```
+
+Allow the microphone when the app asks. Then tap the circle and speak.
+
+### Build an APK
+
+```bash
+flutter build apk
+```
+
+The file is created at `build/app/outputs/flutter-apk/app-release.apk`.
+
+### Permissions
+
+The Android permissions are already set in `android/app/src/main/AndroidManifest.xml`:
+
+- `RECORD_AUDIO` to hear the user
+- `INTERNET` because Android speech recognition often needs a connection
+- A `<queries>` entry for `android.speech.RecognitionService`
+
+iOS is not set up yet. It would also need microphone and speech recognition descriptions in `Info.plist`.
+
+## Connecting the backend
+
+The recognized speech is stored in one variable, `recognizedText`, in `lib/home_screen.dart` (inside `_HomeScreenState`). It updates live while the user speaks.
+
+To send the text to a backend, take the value of `recognizedText` when listening stops. A good place for this is the `onStatus` callback inside `_initSpeech()`, when the status is `done`. No other part of the screen needs to change.
+
+## Customizing
+
+| What | Where |
+| --- | --- |
+| Colors for light and dark mode | `lib/app_colors.dart` |
+| How long "Hello!" stays on screen | `3200` (milliseconds) in `lib/splash_screen.dart` |
+| Speed of the flowing background | `seconds: 14` in `lib/flowing_background.dart` (bigger is slower) |
+| How curvy the S shape is | `0.30` in `lib/flowing_background.dart` |
+| Circle size and ring transparency | `core` and `ringAlpha` in `lib/home_screen.dart` |
+
+
+## Status
+
+- [x] Home screen design
+- [x] Speech to text
+- [x] Light and dark mode
+- [ ] Connect to the backend
+- [ ] Other screens of the app
