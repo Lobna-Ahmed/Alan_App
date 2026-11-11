@@ -10,12 +10,20 @@ This is the first part of the graduation project. It is a self-contained screen,
 - **Flowing background:** slow, S-shaped bands of blue that curve and drift across the screen.
 - **Voice-reactive circle:** a white circle with soft rings. It stays still until you tap it. While listening, the rings fade in and spread outward with the volume of your voice.
 - **Speech to text:** what you say is shown live at the bottom of the screen.
+- **Text to speech:** the app can read text out loud.
 - **Light and dark mode:** a moon/sun button in the top corner switches modes. It starts from the phone's own setting.
+
+## Screenshots
+
+| Greeting | Home (light) | Listening | Home (dark) | Text to speech |
+| --- | --- | --- | --- | --- |
+| <img src="screenshots/splash.png" width="160"> | <img src="screenshots/home-light.png" width="160"> | <img src="screenshots/listening.png" width="160"> | <img src="screenshots/home-dark.png" width="160"> | <img src="screenshots/text-to-speech.png" width="160"> |
 
 ## Built with
 
 - [Flutter](https://flutter.dev) and Dart
 - [`speech_to_text`](https://pub.dev/packages/speech_to_text) for speech recognition
+- A text-to-speech package for reading text out loud
 
 ## Project structure
 
@@ -81,11 +89,16 @@ To send the text to a backend, take the value of `recognizedText` when listening
 | How curvy the S shape is | `0.30` in `lib/flowing_background.dart` |
 | Circle size and ring transparency | `core` and `ringAlpha` in `lib/home_screen.dart` |
 
+## Known limitations
+
+- Microphone input often does not work on emulators. Test speech on a real phone.
+- Speech recognition on Android usually needs an internet connection and Google's speech services on the device.
 
 ## Status
 
 - [x] Home screen design
 - [x] Speech to text
+- [x] Text to speech
 - [x] Light and dark mode
 - [ ] Connect to the backend
 - [ ] Other screens of the app
